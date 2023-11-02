@@ -1,0 +1,23 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+
+        // PDFTron Android SDK repository
+        maven {
+            url "https://pdftron-maven.s3.amazonaws.com/release"
+        }
+        jcenter() // Warning: this repository is going to shut down soon
+    }
+}
+
+rootProject.name = "ReadPaper"
+include ':app'
