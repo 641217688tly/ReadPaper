@@ -53,23 +53,6 @@ public class HomepageActivity extends AppCompatActivity implements View.OnClickL
         rvPaper = findViewById(R.id.rvPaper);
         rvPaper.setLayoutManager(new LinearLayoutManager(this));
         rvPaper.addItemDecoration(new DividerItemDecoration(rvPaper.getContext(), DividerItemDecoration.VERTICAL));
-
-//        BmobQuery<Paper> query = new BmobQuery<>();
-//        query.addWhereEqualTo("user", new BmobPointer(user));
-//        query.order("-createdAt"); // 按创建时间降序排列
-//        query.findObjects(new FindListener<Paper>() {
-//            @Override
-//            public void done(List<Paper> papers, BmobException e) {
-//                if (e == null) {   //  查询成功,返回Paper列表并更新Adapter数据
-//                    paperAdapter = new PaperAdapter(papers, HomepageActivity.this);
-//                    //paperAdapter.setOnRecyclerItemClickListener(HomepageActivity.this);
-//                    rvPaper.setAdapter(paperAdapter); // Set the adapter to the RecyclerView
-//                    Toast.makeText(HomepageActivity.this, "Query Success. " + papers.size() + " papers found.", Toast.LENGTH_SHORT).show();
-//                } else { // 查询失败
-//                    Toast.makeText(HomepageActivity.this, "Query Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
     }
 
     // Separate method for loading papers

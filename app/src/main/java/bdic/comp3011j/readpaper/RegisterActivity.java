@@ -49,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String passwordConfirm = etPasswordConfirm.getText().toString().trim();
         // 确保用户两次输入的密码相同
         if (!password.equals(passwordConfirm)) {
-            Toast.makeText(RegisterActivity.this, "两次输入的密码不一致", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "The two passwords are different", Toast.LENGTH_SHORT).show();
             return;
         }
         // 确保用户使用的邮箱未被注册过
@@ -60,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             public void done(List<BmobUser> list, BmobException e) {
                 if (e == null) {
                     if (list.size() > 0) { // 该邮箱已被注册
-                        Toast.makeText(RegisterActivity.this, "该邮箱已被注册", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "The email address has been registered", Toast.LENGTH_SHORT).show();
                     } else { // 该邮箱未被注册
                         BmobUser user = new BmobUser();
                         user.setUsername(username);
@@ -70,16 +70,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             @Override
                             public void done(BmobUser bmobUser, BmobException e) {
                                 if (e == null) {
-                                    Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RegisterActivity.this, "Registered successfully!", Toast.LENGTH_SHORT).show();
                                     finish();
                                 } else {
-                                    Toast.makeText(RegisterActivity.this, "注册失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RegisterActivity.this, "Fail to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                     }
                 } else {
-                    Toast.makeText(RegisterActivity.this, "查询失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Query failure: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

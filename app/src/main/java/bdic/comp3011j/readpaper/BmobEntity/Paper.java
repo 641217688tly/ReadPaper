@@ -2,7 +2,6 @@ package bdic.comp3011j.readpaper.BmobEntity;
 
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobFile;
 
 public class Paper extends BmobObject{
     private BmobUser user;
