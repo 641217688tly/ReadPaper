@@ -9,7 +9,6 @@ public class Paper extends BmobObject{
     private String title;
     private String author;
     private String url;
-    private BmobFile file;
 
     public BmobUser getUser() {
         return user;
@@ -43,11 +42,4 @@ public class Paper extends BmobObject{
         this.url = url;
     }
 
-    public BmobFile getFile() {
-        return file;
-    }
-
-    public void setFile(BmobFile file) {
-        this.file = file;
-    }
 }

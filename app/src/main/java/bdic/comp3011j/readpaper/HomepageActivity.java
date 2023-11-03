@@ -16,10 +16,10 @@ public class HomepageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
 
-        jumpToPDF();
+
     }
 
-    private void jumpToPDF() {
+    private void viewPDF() {
         // Set the cache location using the config to store the cache file
         ViewerConfig config = new ViewerConfig.Builder()
                 .openUrlCachePath(this.getCacheDir().getAbsolutePath())
@@ -31,7 +31,6 @@ public class HomepageActivity extends AppCompatActivity {
         final Uri uri = Uri.parse("https://arxiv.org/pdf/2308.09239.pdf");
 
         //DocumentActivity.openDocument(this, uri, config);
-
         Intent intent = DocumentActivity.IntentBuilder.fromActivityClass(this, DocumentActivity.class)
                 .withUri(uri)
                 .usingConfig(config)

@@ -55,6 +55,14 @@
         android:text="Choose PDF File"
         android:visibility="gone" />
 
+    <ProgressBar
+        android:id="@+id/pbFileUpload"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="false"
+        android:visibility="gone" />
+
     <Button
         android:id="@+id/btnAddPaper"
         android:layout_width="match_parent"
