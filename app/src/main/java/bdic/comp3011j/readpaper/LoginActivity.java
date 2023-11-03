@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
                     saveUserInfo(email, password);
 
-                    Intent intent = new Intent(LoginActivity.this, AddPaperActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, HomepageActivity.class);
                     startActivity(intent);
                 } else { // 登录失败
                     Toast.makeText(LoginActivity.this, "Failed Login: " + e.getMessage(), Toast.LENGTH_SHORT).show();
