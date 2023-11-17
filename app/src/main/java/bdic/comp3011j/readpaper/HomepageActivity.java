@@ -1,7 +1,7 @@
 package bdic.comp3011j.readpaper;
 
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,14 +13,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pdftron.pdf.config.ViewerConfig;
-import com.pdftron.pdf.controls.DocumentActivity;
-
 import java.util.List;
 
 import bdic.comp3011j.readpaper.Adapter.PaperAdapter;
 import bdic.comp3011j.readpaper.BmobEntity.Paper;
-import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobPointer;
@@ -36,7 +32,6 @@ public class HomepageActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
-
 
         initView();
     }
@@ -86,21 +81,8 @@ public class HomepageActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    public void viewPDF(String url) {
-        // Set the cache location using the config to store the cache file
-        ViewerConfig config = new ViewerConfig.Builder()
-                .openUrlCachePath(this.getCacheDir().getAbsolutePath())
-                .showAnnotationsList(true)
-                .build();
-        final Uri uri = Uri.parse(url);
-
-        //DocumentActivity.openDocument(this, uri, config);
-        Intent intent = DocumentActivity.IntentBuilder.fromActivityClass(this, DocumentActivity.class)
-                .withUri(uri)
-                .usingConfig(config)
-                //.usingTheme(R.style.PDFTronAppTheme)
-                .build();
-        startActivity(intent);
+    public void viewPDF(String url, Context context) {
+        CustomDocumentActivity.viewPDF(url, context);
     }
 
     @Override
@@ -135,13 +117,4 @@ public class HomepageActivity extends AppCompatActivity implements View.OnClickL
     }
 
 }
-
-
-// "http://bmob-cdn-31383.bmobpay.com/2023/11/02/d379512c493b499d92d8498cc02404c7.pdf"
-// https://arxiv.org/pdf/2308.09239.pdf
-// https://pdftron.s3.amazonaws.com/downloads/pl/PDFTRON_mobile_about.pdf
-
-
-
-
 

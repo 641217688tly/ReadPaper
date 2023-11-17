@@ -54,7 +54,7 @@ public class PaperAdapter extends RecyclerView.Adapter<PaperAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 if(context instanceof HomepageActivity){
-                    ((HomepageActivity)context).viewPDF(paper.getUrl());
+                    ((HomepageActivity)context).viewPDF(paper.getUrl(), context);
                 }
             }
         });
