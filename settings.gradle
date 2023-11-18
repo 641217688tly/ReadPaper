@@ -10,7 +10,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-
+        // PSPDFKIT Android SDK repository
+        maven {
+            url "https://my.pspdfkit.com/maven/"
+        }
         // PDFTron Android SDK repository
         maven {
             url "https://pdftron-maven.s3.amazonaws.com/release"

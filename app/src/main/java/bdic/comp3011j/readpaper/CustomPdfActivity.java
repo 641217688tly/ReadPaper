@@ -1,18 +1,12 @@
 package bdic.comp3011j.readpaper;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
+import com.pspdfkit.ui.PdfActivity;
 
-import com.pdftron.pdf.config.ViewerConfig;
-import com.pdftron.pdf.controls.DocumentActivity;
-
-public class CustomDocumentActivity extends DocumentActivity{
-
-    private static ViewerConfig viewerConfig;
+public class CustomPdfActivity extends PdfActivity {
 
     private static final long MAX_DURATION_FOR_CLICKS = 300; // 定义有效点击的最大间隔时间
     private int consecutiveClickCount = 0;
@@ -43,32 +37,28 @@ public class CustomDocumentActivity extends DocumentActivity{
         return super.dispatchTouchEvent(event);
     }
 
-    private static void configViewerConfig(Context context){
 
-        viewerConfig = new ViewerConfig.Builder()
-                .openUrlCachePath(context.getCacheDir().getAbsolutePath())
-                .showAnnotationsList(true)
-                .annotationsListFilterEnabled(true)
-                .autoSortUserBookmarks(true)
-                .fullscreenModeEnabled(true)
-                .openUrlPasswordCheckEnabled(true) // Enable password check for all files
-                .outlineListEditingEnabled(true) // Enable outline editing
-                .quickBookmarkCreation(true)  // 书签
-                .showQuickNavigationButton(true) // 显示快速导航按钮
-                .tabletLayoutEnabled(true) // 平板布局
-                .multiTabEnabled(true) // 多标签
-                .build();
+    private void handleConsecutiveClicks() {
+        long currentTime = System.currentTimeMillis();
+
+        // 如果两次点击之间的时间小于设定的最大间隔，则增加点击次数
+        if (currentTime - lastClickTime < MAX_DURATION_FOR_CLICKS) {
+            consecutiveClickCount++;
+        } else {
+            // 如果不是连续点击，则重置点击次数
+            consecutiveClickCount = 1;
+        }
+
+        // 更新上一次点击时间
+        lastClickTime = currentTime;
+
+        // 如果达到5次连续点击，则执行跳转
+        if (consecutiveClickCount == 5) {
+            // 跳转到目标Activity
+            Intent intent = new Intent(this, ChatActivity.class);
+            startActivity(intent);
+            // 重置点击次数
+            consecutiveClickCount = 0;
+        }
     }
-
-    public static void viewPDF(String url, Context context){
-        final Uri uri = Uri.parse(url);
-        configViewerConfig(context);
-        Intent intent = CustomDocumentActivity.IntentBuilder.fromActivityClass(context, CustomDocumentActivity.class)
-                .withUri(uri)
-                .usingConfig(viewerConfig)
-                .build();
-        context.startActivity(intent);
-    }
-
-
 }

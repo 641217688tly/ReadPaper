@@ -53,6 +53,24 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
+            android:name=".CustomDocumentActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:theme="@style/PDFTronAppTheme"
+            android:windowSoftInputMode="adjustPan"
+            android:exported="false" />
+
+        <activity
+            android:name="com.pspdfkit.ui.PdfActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name=".CustomPdfActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="false" />
+
+        <activity
             android:name=".LoginActivity"
             android:exported="true" >
             <intent-filter>
