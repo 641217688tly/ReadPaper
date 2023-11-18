@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,13 +30,15 @@ import bdic.comp3011j.readpaper.Adapter.PaperAdapter;
 import bdic.comp3011j.readpaper.BmobEntity.Paper;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.UpdateListener;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import lombok.val;
 
-public class HomepageActivity extends AppCompatActivity implements View.OnClickListener {
+public class HomepageActivity extends AppCompatActivity{
 
     private RecyclerView rvPaper;
     private PaperAdapter paperAdapter;
@@ -60,6 +63,12 @@ public class HomepageActivity extends AppCompatActivity implements View.OnClickL
         rvPaper = findViewById(R.id.rvPaper);
         rvPaper.setLayoutManager(new LinearLayoutManager(this));
         rvPaper.addItemDecoration(new DividerItemDecoration(rvPaper.getContext(), DividerItemDecoration.VERTICAL));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadPapers(); // Refresh papers every time the activity is resumed
     }
 
     // Separate method for loading papers
@@ -127,11 +136,45 @@ public class HomepageActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadPapers(); // Refresh papers every time the activity is resumed
+    public void deletePaper(Paper paper, List<Paper> paperList, int position) {
+        // 创建一个 AlertDialog 进行确认
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm Delete")
+                .setMessage("Are you sure you want to delete this paper?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> { // User clicked YES, so proceed with deletion
+                    // 首先尝试从云服务器中删除论文文件
+                    BmobFile file = new BmobFile();
+                    file.setUrl(paper.getUrl()); // 设置文件的URL
+                    file.delete(new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            if(e==null){
+                                // 文件删除成功，接下来删除Paper对象
+                                Toast.makeText(HomepageActivity.this, "Paper PDF File deleted successfully", Toast.LENGTH_SHORT).show();
+                                paper.delete(new UpdateListener() {
+                                    @Override
+                                    public void done(BmobException e) {
+                                        if(e==null){
+                                            // Paper删除成功
+                                            Toast.makeText(HomepageActivity.this, "Paper deleted successfully", Toast.LENGTH_SHORT).show();
+                                            paperList.remove(position); // 从列表中移除
+                                            paperAdapter.notifyItemRemoved(position); // 通知Adapter
+                                        }else{
+                                            // Paper删除失败
+                                            Toast.makeText(HomepageActivity.this, "Paper delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }else{
+                                // 文件删除失败
+                                Toast.makeText(HomepageActivity.this, "File delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                })
+                .setNegativeButton(android.R.string.no, null) // Do nothing on clicking NO
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     @Override
@@ -154,10 +197,6 @@ public class HomepageActivity extends AppCompatActivity implements View.OnClickL
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View view) {
-
-    }
 
 }
 

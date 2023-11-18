@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".AddPaperActivity">
+    android:padding="16dp">
 
     <EditText
         android:id="@+id/etTitle"
@@ -63,8 +62,10 @@
         android:visibility="gone" />
 
     <Button
-        android:id="@+id/btnAddPaper"
+        android:id="@+id/btnUpdatePaper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Paper" />
+        android:text="Update Paper" />
+
+
 </LinearLayout>

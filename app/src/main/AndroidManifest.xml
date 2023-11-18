@@ -2,14 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />  <!-- 允许联网 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />  <!-- 获取sd卡写的权限，用于文件上传和下载 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 允许联网 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 获取sd卡写的权限，用于文件上传和下载 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 获取GSM（2g）、WCDMA（联通3g）等网络状态的信息 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 获取wifi网络状态的信息 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 允许读取手机状态 用于创建BmobInstallation -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 获取sd卡写的权限，用于文件上传和下载 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -20,11 +20,14 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:usesCleartextTraffic="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ReadPaper"
-        tools:targetApi="31" >
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <activity
+            android:name=".EditPaperActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="pdftron_license_key"
@@ -33,58 +36,47 @@
         <activity
             android:name=".AddPaperActivity"
             android:exported="false" />
-
         <activity
             android:name=".HomepageActivity"
             android:exported="false" />
-
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
-
         <activity
             android:name=".ChatActivity"
             android:exported="false" />
-
         <activity
             android:name="com.pdftron.pdf.controls.DocumentActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/PDFTronAppTheme"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".CustomDocumentActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:exported="false"
             android:theme="@style/PDFTronAppTheme"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false" />
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.pspdfkit.ui.PdfActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="adjustNothing" />
-
         <activity
             android:name=".CustomPdfActivity"
+            android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustNothing"
-            android:exported="false" />
-
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".LoginActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- 添加ContentProvider信息 -->
-
         <provider
             android:name="cn.bmob.v3.util.BmobContentProvider"
-            android:authorities="bdic.comp3011j.readpaper.BmobContentProvider" >
-        </provider>
-
+            android:authorities="bdic.comp3011j.readpaper.BmobContentProvider"></provider>
     </application>
 
 </manifest>

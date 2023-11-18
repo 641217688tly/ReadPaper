@@ -1,6 +1,8 @@
 package bdic.comp3011j.readpaper.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import bdic.comp3011j.readpaper.BmobEntity.Paper;
+import bdic.comp3011j.readpaper.EditPaperActivity;
 import bdic.comp3011j.readpaper.HomepageActivity;
 import bdic.comp3011j.readpaper.R;
 
@@ -40,7 +43,7 @@ public class PaperAdapter extends RecyclerView.Adapter<PaperAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         if (paperList == null) {
             return;
         }
@@ -53,9 +56,25 @@ public class PaperAdapter extends RecyclerView.Adapter<PaperAdapter.ViewHolder> 
         holder.btnView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(context instanceof HomepageActivity){
-                    ((HomepageActivity)context).viewPDF(paper.getUrl(), context);
+                if (context instanceof HomepageActivity) {
+                    ((HomepageActivity) context).viewPDF(paper.getUrl(), context);
                 }
+            }
+        });
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (context instanceof HomepageActivity) {
+                    ((HomepageActivity) context).deletePaper(paper, paperList, position);
+                }
+            }
+        });
+        holder.btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, EditPaperActivity.class);
+                intent.putExtra("paper", paper); // Make sure Paper class implements Serializable
+                context.startActivity(intent);
             }
         });
     }
