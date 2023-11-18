@@ -2,6 +2,7 @@ package bdic.comp3011j.readpaper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +14,15 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.pspdfkit.configuration.activity.PdfActivityConfiguration;
+import com.pspdfkit.document.download.DownloadJob;
+import com.pspdfkit.document.download.DownloadRequest;
+import com.pspdfkit.document.download.Progress;
+import com.pspdfkit.ui.PdfActivity;
+import com.pspdfkit.ui.PdfActivityIntentBuilder;
+import com.pspdfkit.ui.PdfFragment;
+
+import java.io.File;
 import java.util.List;
 
 import bdic.comp3011j.readpaper.Adapter.PaperAdapter;
@@ -22,6 +32,8 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import lombok.val;
 
 public class HomepageActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -82,8 +94,39 @@ public class HomepageActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void viewPDF(String url, Context context) {
-        CustomDocumentActivity.viewPDF(url, context);
+        if(true){ // 暂时先使用PDFTron的SDK
+            CustomDocumentActivity.viewPDF(url, context);
+        }else{ // PSPDFKit的SDK
+            final DownloadRequest request = new DownloadRequest.Builder(context)
+                    .uri(url)
+                    .build();
+            final DownloadJob job = DownloadJob.startDownload(request);
+
+            final PdfActivityConfiguration config = new PdfActivityConfiguration
+                    .Builder(context)
+                    .build();
+            job.setProgressListener(new DownloadJob.ProgressListenerAdapter() {
+                @Override public void onProgress( Progress progress) {
+                    //progressBar.setProgress((int) (100 * progress.bytesReceived / (float) progress.totalBytes));
+                }
+
+                @Override public void onComplete(File output) {
+                    //PdfFragment pdfFragment = PdfFragment.newImageInstance(Uri.fromFile(output), config.getConfiguration());
+                    //pdfFragment.addDocumentListener();
+                    Intent intent = PdfActivityIntentBuilder.fromUri(context, Uri.fromFile(output))
+                            .configuration(config)
+                            .activityClass(CustomPdfActivity.class)
+                            .build();
+                    startActivity(intent);
+                }
+
+                @Override public void onError( Throwable exception) {
+                    //handleDownloadError(exception);
+                }
+            });
+        }
     }
+
 
     @Override
     protected void onResume() {
