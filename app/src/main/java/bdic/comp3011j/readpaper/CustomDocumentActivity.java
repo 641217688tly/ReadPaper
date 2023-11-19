@@ -27,8 +27,6 @@ public class CustomDocumentActivity extends DocumentActivity{
                 consecutiveClickCount++;
                 Log.d("CustomDocumentActivity", "Tap count: " + consecutiveClickCount); // 添加日志输出
                 if (consecutiveClickCount == 5) {
-                    Toast.makeText(this, "Starting ChatActivity...", Toast.LENGTH_SHORT).show(); // 显示Toast消息
-                    Log.d("CustomDocumentActivity", "Starting ChatActivity"); // 添加日志输出
                     Intent intent = new Intent(this, ChatActivity.class);
                     startActivity(intent);
                     consecutiveClickCount = 0; // 重置点击计数
@@ -44,7 +42,6 @@ public class CustomDocumentActivity extends DocumentActivity{
     }
 
     private static void configViewerConfig(Context context){
-
         viewerConfig = new ViewerConfig.Builder()
                 .openUrlCachePath(context.getCacheDir().getAbsolutePath())
                 .showAnnotationsList(true)

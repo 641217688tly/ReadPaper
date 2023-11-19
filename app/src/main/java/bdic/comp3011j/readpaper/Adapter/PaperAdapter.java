@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import bdic.comp3011j.readpaper.Application.AppApplication;
 import bdic.comp3011j.readpaper.BmobEntity.Paper;
 import bdic.comp3011j.readpaper.EditPaperActivity;
 import bdic.comp3011j.readpaper.HomepageActivity;
@@ -57,6 +58,8 @@ public class PaperAdapter extends RecyclerView.Adapter<PaperAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 if (context instanceof HomepageActivity) {
+                    AppApplication application = (AppApplication)context.getApplicationContext();
+                    application.setCurrentPaper(paper);
                     ((HomepageActivity) context).viewPDF(paper.getUrl(), context);
                 }
             }
