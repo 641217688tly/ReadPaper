@@ -108,7 +108,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.btSend) { // 发送新消息
+        if (view == btSend) { // 发送新消息
             String prompt = etPrompt.getText().toString();
             chatWithOpenAI(prompt);
         }
@@ -145,13 +145,17 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(ChatActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                 }
             });
+            messages.add(Message.builder()
+                    .role(Message.Role.USER)
+                    .content(prompt)
+                    .build());
 
             // 构造ChatCompletion对象以加载聊天记录以及模型参数
             ChatCompletion chatCompletion = ChatCompletion
                     .builder()
                     .messages(messages)
-                    .model(ChatCompletion.Model.GPT_3_5_TURBO_16K.getName())
-                    .maxTokens(16385 - TikTokensUtil.tokens(ChatCompletion.Model.GPT_3_5_TURBO_16K.getName(), messages))
+                    .model(ChatCompletion.Model.GPT_4.getName())
+                    //.maxTokens(4096 - TikTokensUtil.tokens(ChatCompletion.Model.GPT_4.getName(), messages))
                     .build();
 
             // 获取OpenAI的响应
@@ -171,6 +175,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(ChatActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
+
                 runOnUiThread(() -> tvResponse.setText(response)); //TODO 有待修改
                 // 更新系统消息(即,语境)
                 updateSystemMessage();
