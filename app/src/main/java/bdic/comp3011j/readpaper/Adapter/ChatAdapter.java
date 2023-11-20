@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import bdic.comp3011j.readpaper.BmobEntity.Chat;
+import bdic.comp3011j.readpaper.BmobEntity.MessageType;
 import bdic.comp3011j.readpaper.R;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
@@ -40,8 +41,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
             return;
         }
         Chat chat = chatList.get(position);
-        holder.tvRole.setText(chat.getType());
-        holder.tvContent.setText(chat.getContent());
+        // 当类型为SYSTEM时，隐藏该条目，否则显示
+        if (chat.getType().equals(MessageType.SYSTEM.toString())) {
+            holder.itemView.setVisibility(View.GONE);
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0)); // 将高度设为0
+        } else {
+            holder.tvRole.setText(chat.getType());
+            holder.tvContent.setText(chat.getContent());
+        }
 
         // Set the button click listeners
     }

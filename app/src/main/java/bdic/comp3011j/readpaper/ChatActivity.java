@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.unfbx.chatgpt.OpenAiClient;
 import com.unfbx.chatgpt.entity.chat.ChatCompletion;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import bdic.comp3011j.readpaper.Adapter.ChatAdapter;
 import bdic.comp3011j.readpaper.Application.AppApplication;
 import bdic.comp3011j.readpaper.BmobEntity.Chat;
 import bdic.comp3011j.readpaper.BmobEntity.MessageType;
@@ -44,27 +46,33 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     private EditText etPrompt;
     private Button btSend;
-    private TextView tvResponse;
     private Paper currentPaper;
     private List<Chat> chatList;
+    private RecyclerView rvChat;
+    private ChatAdapter chatAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
         // 初始化组件
         etPrompt = findViewById(R.id.etPrompt);
         btSend = findViewById(R.id.btSend);
-        tvResponse = findViewById(R.id.tvResponse);
-
+        initView();
         // 加载数据
         currentPaper = ((AppApplication) getApplicationContext()).getCurrentPaper();
         chatList = new ArrayList<>();
-        loadHistoryChats(currentPaper);
-        initView();
-
         // 设置监听器
         btSend.setOnClickListener(this);
+
+        loadHistoryChats(currentPaper);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadHistoryChats(currentPaper); // Refresh papers every time the activity is resumed
     }
 
     private void loadHistoryChats(Paper currentPaper) {
@@ -79,6 +87,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         public void onSuccess(String objectId) {
                             chatList.add(new Chat(objectId, "", MessageType.SYSTEM.toString()));
                         }
+
                         @Override
                         public void onFail(String errorMessage) {
                             Toast.makeText(ChatActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
@@ -96,42 +105,60 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
             @Override
             public void onFail(String errorMessage) {
-                Toast.makeText(ChatActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatActivity.this, "History Chats failed load: " + errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void initView() {
-        //TODO
-
+        if (!BmobUser.isLogin()) {
+            // 弹出未登录消息,跳转到登录界面
+            Toast.makeText(this, "Please Login!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ChatActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+        rvChat = findViewById(R.id.rvChat);
+        rvChat.setLayoutManager(new LinearLayoutManager(this));
+        rvChat.addItemDecoration(new DividerItemDecoration(rvChat.getContext(), DividerItemDecoration.VERTICAL));
+        chatAdapter = new ChatAdapter(chatList, ChatActivity.this);
+        rvChat.setAdapter(chatAdapter);
     }
 
     @Override
     public void onClick(View view) {
         if (view == btSend) { // 发送新消息
             String prompt = etPrompt.getText().toString();
-            chatWithOpenAI(prompt);
+            if (!prompt.isEmpty()) {
+                chatWithOpenAI(prompt);
+            }
         }
     }
 
     private void chatWithOpenAI(String prompt) {
         new Thread(() -> {
-            // 根据设备类型设置代理:
-            Proxy proxy;
+            // 根据设备类型设置代理并创建OpenAI客户端:
+            OpenAiClient openAiClient;
             String deviceType = getSharedPreferences("ReadPaper", Context.MODE_PRIVATE).getString("device", "Physical");
-            int proxyPort = Integer.parseInt(getSharedPreferences("ReadPaper", Context.MODE_PRIVATE).getString("proxyPort", "7890"));
-            proxy = deviceType.equals("Physical") ?
-                    new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", proxyPort)) :
-                    new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.0.2.2", proxyPort));
-
-            // 创建OpenAI客户端
-            OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .proxy(proxy)
-                    .build();
-            OpenAiClient openAiClient = OpenAiClient.builder()
-                    .apiKey(Arrays.asList("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"))
-                    .okHttpClient(okHttpClient)
-                    .build();
+            if (deviceType.equals("Physical")) {
+                // 创建OpenAI客户端
+                openAiClient = OpenAiClient.builder()
+                        .apiKey(Arrays.asList("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"))
+                        .build();
+            } else {
+                // 自定义网络代理和okHttpClient
+                int proxyPort = Integer.parseInt(getSharedPreferences("ReadPaper", Context.MODE_PRIVATE).getString("proxyPort", "7890"));
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.0.2.2", proxyPort));
+                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                        .proxy(proxy)
+                        .build();
+                // 创建OpenAI客户端
+                openAiClient = OpenAiClient.builder()
+                        .okHttpClient(okHttpClient)
+                        .apiKey(Arrays.asList("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"))
+                        .build();
+            }
 
             // 构建本次交互的消息列表
             List<Message> messages = new ArrayList<>();
@@ -140,6 +167,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 public void onSuccess(List<Message> result) {
                     messages.addAll(result);
                 }
+
                 @Override
                 public void onFail(String errorMessage) {
                     Toast.makeText(ChatActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
@@ -163,21 +191,44 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 ChatCompletionResponse chatCompletionResponse = openAiClient.chatCompletion(chatCompletion);
                 String response = chatCompletionResponse.getChoices().get(0).getMessage().getContent();
 
-                // 向数据库和chatList中插入Openai的回复
-                insertChat(response, MessageType.ASSISTANT, new InsertCallback() {
-                    @Override
-                    public void onSuccess(String objectId) {
-                        chatList.add(new Chat(objectId, response, MessageType.ASSISTANT.toString()));
-                    }
+                // 向数据库和chatList中插入用户的提问和Openai的回复
+                if (response != null && !response.isEmpty()) {
+                    // 插入用户的提问
+                    insertChat(prompt, MessageType.USER, new InsertCallback() { // 先向数据库中添加本次用户输入
+                        @Override
+                        public void onSuccess(String objectId) { // 添加完成后,向chatList和messages中添加本次用户输入
+                            chatList.add(new Chat(objectId, prompt, MessageType.USER.toString()));
 
+                            // 插入OpenAI的响应(保证了类型为USER的Chat总是在类型为ASSISTANT的Chat之前被插入数据库)
+                            insertChat(response, MessageType.ASSISTANT, new InsertCallback() {
+                                @Override
+                                public void onSuccess(String objectId) {
+                                    chatList.add(new Chat(objectId, response, MessageType.ASSISTANT.toString()));
+
+                                }
+                                @Override
+                                public void onFail(String errorMessage) {
+                                    Toast.makeText(ChatActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                        @Override
+                        public void onFail(String errorMessage) {
+                            Toast.makeText(ChatActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                // 更新UI界面
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void onFail(String errorMessage) {
-                        Toast.makeText(ChatActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    public void run() {
+                        // 通知数据集改变并滚动到最后一条
+                        chatAdapter.notifyItemInserted(chatList.size() - 1);
+                        rvChat.scrollToPosition(chatList.size() - 1);
+                        etPrompt.setText(""); // 清空输入框
                     }
                 });
 
-                runOnUiThread(() -> tvResponse.setText(response)); //TODO 有待修改
-                // 更新系统消息(即,语境)
                 updateSystemMessage();
             } catch (Exception e) {
                 Log.e("ChatActivity", "Error interacting with OpenAI: ", e);
@@ -192,7 +243,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     private void constructChatMessages(String prompt, QueryCallback<Message> callback) {
         List<Message> messages = new ArrayList<>();
-        // 向messages中添加历史聊天记录(有待修改)
+        //TODO 向messages中添加历史聊天记录(有待修改)
         for (Chat chat : chatList) {
             Message.Builder messageBuilder = Message.builder().content(chat.getContent());
             if (chat.getType().equals(MessageType.USER.toString())) {
@@ -205,21 +256,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             messages.add(messageBuilder.build());
         }
         // 向messages中添加本次的用户输入
-        insertChat(prompt, MessageType.USER, new InsertCallback() { // 先向数据库中添加本次用户输入
-            @Override
-            public void onSuccess(String objectId) { // 添加完成后,向chatList和messages中添加本次用户输入
-                chatList.add(new Chat(objectId, prompt, MessageType.USER.toString()));
-                messages.add(Message.builder()
-                        .role(Message.Role.USER)
-                        .content(prompt)
-                        .build());
-                callback.onSuccess(messages);
-            }
-            @Override
-            public void onFail(String errorMessage) {
-                callback.onFail(errorMessage);
-            }
-        });
+        messages.add(Message.builder()
+                .role(Message.Role.USER)
+                .content(prompt)
+                .build());
     }
 
     //-----------------------------------以下为增删改查操作--------------------------------------------
