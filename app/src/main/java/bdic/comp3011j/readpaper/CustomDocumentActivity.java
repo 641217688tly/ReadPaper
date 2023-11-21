@@ -41,7 +41,6 @@ public class CustomDocumentActivity extends DocumentActivity{
         handler.removeCallbacks(finishActivityTask);
     }
 
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {

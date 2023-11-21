@@ -210,6 +210,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
                 // 构建本次交互的消息列表
                 List<Message> messages = constructChatMessages(prompt);
+
                 for (Message message : messages) {
                     Log.d("ChatActivity", "Message Role: " + message.getRole());
                     Log.d("ChatActivity", "Message Content: " + message.getContent());
@@ -234,12 +235,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onSuccess(String objectId) { // 添加完成后,向chatList和messages中添加本次用户输入
                                 chatList.add(new Chat(objectId, prompt, MessageType.USER.toString()));
-
+                                Log.d("ChatActivity", "USER Content: " +  chatList.get(chatList.size() - 1).getContent());
                                 // 插入OpenAI的响应(保证了类型为USER的Chat总是在类型为ASSISTANT的Chat之前被插入数据库)
                                 insertChat(response, MessageType.ASSISTANT, new InsertCallback() {
                                     @Override
                                     public void onSuccess(String objectId) {
                                         chatList.add(new Chat(objectId, response, MessageType.ASSISTANT.toString()));
+                                        Log.d("ChatActivity", "ASSISTANT Content: " +  chatList.get(chatList.size() - 1).getContent());
                                         // 更新UI界面
                                         runOnUiThread(new Runnable() {
                                             @Override
@@ -280,7 +282,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     private List<Message> constructChatMessages(String prompt) {
         List<Message> messages = new ArrayList<>();
-        //TODO 向messages中添加历史聊天记录(有待修改)
+        // 向messages中添加历史聊天记录
         for (Chat chat : chatList) {
             Message.Builder messageBuilder = Message.builder().content(chat.getContent());
             if (chat.getType().equals(MessageType.USER.toString())) {
