@@ -7,7 +7,7 @@ import cn.bmob.v3.Bmob;
 
 public class AppApplication extends Application {
 
-    private Paper currentPaper;
+    private static Paper currentPaper;
 
     @Override
     public void onCreate() {
@@ -15,11 +15,14 @@ public class AppApplication extends Application {
         Bmob.initialize(this, "9d8e85b0505e3f85d9b4aa7c70d1df66");
     }
 
-    public Paper getCurrentPaper() {
+    public static Paper getCurrentPaper() {
+        if (AppApplication.currentPaper == null) {
+            AppApplication.currentPaper = new Paper();
+        }
         return currentPaper;
     }
 
-    public void setCurrentPaper(Paper currentPaper) {
-        this.currentPaper = currentPaper;
+    public static void setCurrentPaper(Paper currentPaper) {
+        AppApplication.currentPaper = currentPaper;
     }
 }

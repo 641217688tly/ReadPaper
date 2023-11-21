@@ -1,7 +1,5 @@
 package bdic.comp3011j.readpaper.BmobEntity;
 
-import androidx.room.PrimaryKey;
-
 import cn.bmob.v3.BmobObject;
 
 public class Chat extends BmobObject {

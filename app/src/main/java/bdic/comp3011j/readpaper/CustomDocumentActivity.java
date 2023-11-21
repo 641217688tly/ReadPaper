@@ -3,6 +3,8 @@ package bdic.comp3011j.readpaper;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
@@ -13,10 +15,32 @@ import com.pdftron.pdf.controls.DocumentActivity;
 public class CustomDocumentActivity extends DocumentActivity{
 
     private static ViewerConfig viewerConfig;
-
     private static final long MAX_DURATION_FOR_CLICKS = 300; // 定义有效点击的最大间隔时间
     private int consecutiveClickCount = 0;
     private long lastClickTime = 0;
+    Handler handler = new Handler(Looper.getMainLooper());
+    private final Runnable finishActivityTask = new Runnable() {
+        @Override
+        public void run() {
+            // 当一分钟过去后，结束Activity
+            finish();
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // 用户离开Activity时开始计时
+        handler.postDelayed(finishActivityTask, 60000); // 60000毫秒后执行run方法
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 用户返回Activity时取消计时
+        handler.removeCallbacks(finishActivityTask);
+    }
+
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
