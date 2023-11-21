@@ -27,7 +27,9 @@ import java.io.File;
 import java.util.List;
 
 import bdic.comp3011j.readpaper.Adapter.PaperAdapter;
+import bdic.comp3011j.readpaper.BmobEntity.Chat;
 import bdic.comp3011j.readpaper.BmobEntity.Paper;
+import bdic.comp3011j.readpaper.Util.QueryCallback;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
@@ -38,7 +40,7 @@ import cn.bmob.v3.listener.UpdateListener;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import lombok.val;
 
-public class HomepageActivity extends AppCompatActivity{
+public class HomepageActivity extends AppCompatActivity {
 
     private RecyclerView rvPaper;
     private PaperAdapter paperAdapter;
@@ -63,12 +65,6 @@ public class HomepageActivity extends AppCompatActivity{
         rvPaper = findViewById(R.id.rvPaper);
         rvPaper.setLayoutManager(new LinearLayoutManager(this));
         rvPaper.addItemDecoration(new DividerItemDecoration(rvPaper.getContext(), DividerItemDecoration.VERTICAL));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadPapers(); // Refresh papers every time the activity is resumed
     }
 
     // Separate method for loading papers
@@ -102,79 +98,10 @@ public class HomepageActivity extends AppCompatActivity{
         });
     }
 
-    public void viewPDF(String url, Context context) {
-        if(true){ // 暂时先使用PDFTron的SDK
-            CustomDocumentActivity.viewPDF(url, context);
-        }else{ // PSPDFKit的SDK
-            final DownloadRequest request = new DownloadRequest.Builder(context)
-                    .uri(url)
-                    .build();
-            final DownloadJob job = DownloadJob.startDownload(request);
-
-            final PdfActivityConfiguration config = new PdfActivityConfiguration
-                    .Builder(context)
-                    .build();
-            job.setProgressListener(new DownloadJob.ProgressListenerAdapter() {
-                @Override public void onProgress( Progress progress) {
-                    //progressBar.setProgress((int) (100 * progress.bytesReceived / (float) progress.totalBytes));
-                }
-
-                @Override public void onComplete(File output) {
-                    //PdfFragment pdfFragment = PdfFragment.newImageInstance(Uri.fromFile(output), config.getConfiguration());
-                    //pdfFragment.addDocumentListener();
-                    Intent intent = PdfActivityIntentBuilder.fromUri(context, Uri.fromFile(output))
-                            .configuration(config)
-                            .activityClass(CustomPdfActivity.class)
-                            .build();
-                    startActivity(intent);
-                }
-
-                @Override public void onError( Throwable exception) {
-                    //handleDownloadError(exception);
-                }
-            });
-        }
-    }
-
-    public void deletePaper(Paper paper, List<Paper> paperList, int position) {
-        // 创建一个 AlertDialog 进行确认
-        new AlertDialog.Builder(this)
-                .setTitle("Confirm Delete")
-                .setMessage("Are you sure you want to delete this paper?")
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> { // User clicked YES, so proceed with deletion
-                    // 首先尝试从云服务器中删除论文文件
-                    BmobFile file = new BmobFile();
-                    file.setUrl(paper.getUrl()); // 设置文件的URL
-                    file.delete(new UpdateListener() {
-                        @Override
-                        public void done(BmobException e) {
-                            if(e==null){
-                                // 文件删除成功，接下来删除Paper对象
-                                Toast.makeText(HomepageActivity.this, "Paper PDF File deleted successfully", Toast.LENGTH_SHORT).show();
-                                paper.delete(new UpdateListener() {
-                                    @Override
-                                    public void done(BmobException e) {
-                                        if(e==null){
-                                            // Paper删除成功
-                                            Toast.makeText(HomepageActivity.this, "Paper deleted successfully", Toast.LENGTH_SHORT).show();
-                                            paperList.remove(position); // 从列表中移除
-                                            paperAdapter.notifyItemRemoved(position); // 通知Adapter
-                                        }else{
-                                            // Paper删除失败
-                                            Toast.makeText(HomepageActivity.this, "Paper delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                            }else{
-                                // 文件删除失败
-                                Toast.makeText(HomepageActivity.this, "File delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                })
-                .setNegativeButton(android.R.string.no, null) // Do nothing on clicking NO
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadPapers(); // Refresh papers every time the activity is resumed
     }
 
     @Override
@@ -197,6 +124,156 @@ public class HomepageActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
+    public void viewPDF(String url, Context context) {
+        if (true) { // 暂时先使用PDFTron的SDK
+            CustomDocumentActivity.viewPDF(url, context);
+        } else { // PSPDFKit的SDK
+            final DownloadRequest request = new DownloadRequest.Builder(context)
+                    .uri(url)
+                    .build();
+            final DownloadJob job = DownloadJob.startDownload(request);
 
+            final PdfActivityConfiguration config = new PdfActivityConfiguration
+                    .Builder(context)
+                    .build();
+            job.setProgressListener(new DownloadJob.ProgressListenerAdapter() {
+                @Override
+                public void onProgress(Progress progress) {
+                    //progressBar.setProgress((int) (100 * progress.bytesReceived / (float) progress.totalBytes));
+                }
+
+                @Override
+                public void onComplete(File output) {
+                    //PdfFragment pdfFragment = PdfFragment.newImageInstance(Uri.fromFile(output), config.getConfiguration());
+                    //pdfFragment.addDocumentListener();
+                    Intent intent = PdfActivityIntentBuilder.fromUri(context, Uri.fromFile(output))
+                            .configuration(config)
+                            .activityClass(CustomPdfActivity.class)
+                            .build();
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onError(Throwable exception) {
+                    //handleDownloadError(exception);
+                }
+            });
+        }
+    }
+
+    public void deletePaper(Paper paper, List<Paper> paperList, int position) {
+        // 创建一个 AlertDialog 进行确认
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm Delete")
+                .setMessage("Are you sure you want to delete this paper?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> { // User clicked YES, so proceed with deletion
+                    // 首先尝试从云服务器中删除论文文件
+                    BmobFile file = new BmobFile();
+                    file.setUrl(paper.getUrl()); // 设置文件的URL
+                    file.delete(new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            if (e == null) {
+                                Toast.makeText(HomepageActivity.this, "Paper PDF File deleted successfully", Toast.LENGTH_SHORT).show();
+                            } else {
+                                // 文件删除失败(可能是因为当前用户没有上传过pdf文件导致的)
+                                Toast.makeText(HomepageActivity.this, "File delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    // 之后尝试删除与当前Paper相关的所有聊天记录
+                    queryPaperRelatedChats(paper, new QueryCallback<Chat>() { // 先查询得到与当前Paper相关的所有聊天记录
+                        @Override
+                        public void onSuccess(List<Chat> chatList) {
+                            if (chatList.size() > 0 && chatList != null) { // 如果当前Paper有历史聊天记录,则遍历所有聊天记录并删除
+                                for (int i = 0; i < chatList.size(); i++) {
+                                    Chat chat = chatList.get(i);
+                                    if (i == chatList.size() - 1) {
+                                        chat.delete(new UpdateListener() {
+                                            @Override
+                                            public void done(BmobException e) {
+                                                if (e == null) {
+                                                    // 聊天记录删除成功,接下来删除Paper对象
+                                                    Toast.makeText(HomepageActivity.this, "Related Chats delete successfully!", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    // 聊天记录删除失败
+                                                    Toast.makeText(HomepageActivity.this, "Chat delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                                paper.delete(new UpdateListener() {
+                                                    @Override
+                                                    public void done(BmobException e) {
+                                                        if (e == null) {
+                                                            // Paper删除成功
+                                                            Toast.makeText(HomepageActivity.this, "Paper deleted successfully", Toast.LENGTH_SHORT).show();
+                                                            paperList.remove(position); // 从列表中移除
+                                                            paperAdapter.notifyItemRemoved(position); // 通知Adapter
+                                                        } else {
+                                                            // Paper删除失败
+                                                            Toast.makeText(HomepageActivity.this, "Paper delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        chat.delete(new UpdateListener() {
+                                            @Override
+                                            public void done(BmobException e) {
+                                                if (e == null) {
+                                                    // 聊天记录删除成功
+                                                } else {
+                                                    // 聊天记录删除失败
+                                                    Toast.makeText(HomepageActivity.this, "Chat delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            } else { // 如果当前论文目前没有相关的聊天记录
+                                paper.delete(new UpdateListener() {
+                                    @Override
+                                    public void done(BmobException e) {
+                                        if (e == null) {
+                                            // Paper删除成功
+                                            Toast.makeText(HomepageActivity.this, "Paper deleted successfully", Toast.LENGTH_SHORT).show();
+                                            paperList.remove(position); // 从列表中移除
+                                            paperAdapter.notifyItemRemoved(position); // 通知Adapter
+                                        } else {
+                                            // Paper删除失败
+                                            Toast.makeText(HomepageActivity.this, "Paper delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                        @Override
+                        public void onFail(String reason) {
+                            // 查询失败
+                            Toast.makeText(HomepageActivity.this, "Query failed: " + reason, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                })
+                .setNegativeButton(android.R.string.no, null) // Do nothing on clicking NO
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void queryPaperRelatedChats(Paper paper, QueryCallback<Chat> callback) {
+        // 从Bmob数据库中的Chat表获取所有与当前Paper有关的聊天记录
+        BmobQuery<Chat> query = new BmobQuery<>();
+        query.addWhereEqualTo("paper", paper);
+        query.order("createdAt"); // 按创建时间升序排列
+        query.findObjects(new FindListener<Chat>() {
+            @Override
+            public void done(List<Chat> chatList, BmobException e) {
+                if (e == null) {
+                    callback.onSuccess(chatList);
+                } else {
+                    callback.onFail("Query Failed: " + e.getMessage());
+                }
+            }
+        });
+    }
 }
 

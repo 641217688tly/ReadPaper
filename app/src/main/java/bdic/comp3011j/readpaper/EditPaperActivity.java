@@ -166,9 +166,9 @@ public class EditPaperActivity extends AppCompatActivity implements View.OnClick
                     if (e == null) {
                         Toast.makeText(EditPaperActivity.this, "Paper updated successfully", Toast.LENGTH_SHORT).show();
                         // 旧的URL在Bmob云数据库中可能对应了一个PDF文件,为了解决数据库空间应该将它删除
-                        //if (!newUrl.equals(oldUrl)) {
+                        if (!newUrl.equals(oldUrl)) {
                             removeFileFromCloud(currentPaper.getUrl());
-                        //}
+                        }
                         finish(); // Close activity and go back
                     } else {
                         Toast.makeText(EditPaperActivity.this, "Failed to update paper: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -193,18 +193,21 @@ public class EditPaperActivity extends AppCompatActivity implements View.OnClick
                 pbFileUpload.setVisibility(View.GONE); // 上传结束后隐藏进度条
                 new File(filePath).delete(); // 删除临时文件
                 if (e == null) { // 上传文件成功
-                    // 更新文件的URL并保存Paper对象
+                    // 更新文件的URL
                     currentPaper.setUrl(bmobFile.getFileUrl());
-                    currentPaper.save(new SaveListener<String>() {
+                    // 更新Paper对象
+                    currentPaper.update(currentPaper.getObjectId(), new UpdateListener() {
                         @Override
-                        public void done(String objectId, BmobException e) {
+                        public void done(BmobException e) {
                             if (e == null) {
-                                Toast.makeText(EditPaperActivity.this, "Paper added successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(EditPaperActivity.this, "Paper updated successfully", Toast.LENGTH_SHORT).show();
                                 // 旧的URL在Bmob云数据库中可能对应了一个PDF文件,为了解决数据库空间应该将它删除
-                                removeFileFromCloud(oldUrl);
-                                finish();
+                                if (!bmobFile.getFileUrl().equals(oldUrl)) {
+                                    removeFileFromCloud(currentPaper.getUrl());
+                                }
+                                finish(); // Close activity and go back
                             } else {
-                                Toast.makeText(EditPaperActivity.this, "Failed to add paper: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(EditPaperActivity.this, "Failed to update paper: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

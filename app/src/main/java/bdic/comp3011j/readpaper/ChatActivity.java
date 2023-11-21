@@ -194,7 +194,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     int proxyPort = Integer.parseInt(getSharedPreferences("ReadPaper", Context.MODE_PRIVATE).getString("proxyPort", "7890"));
                     Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.0.2.2", proxyPort));
                     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                            .proxy(proxy)
+                            //.proxy(proxy)
                             .connectTimeout(120, TimeUnit.SECONDS)
                             .writeTimeout(120, TimeUnit.SECONDS)
                             .readTimeout(120, TimeUnit.SECONDS)
