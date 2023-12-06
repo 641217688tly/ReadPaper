@@ -4,28 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F4DFC9"
+    android:padding="4dp"
     tools:context=".ChatActivity">
+
+    <!-- 应用标题 -->
+    <TextView
+        android:id="@+id/tvChatTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/en_title_font"
+        android:text="Read Paper"
+        android:textColor="#FF5722"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 分割线 -->
+    <View
+        android:id="@+id/viewDivider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#2196F3"
+        app:layout_constraintTop_toBottomOf="@+id/tvChatTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- 聊天记录的RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChat"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@id/etPrompt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tvChatTitle" />
 
     <!-- 输入新消息的EditText -->
     <EditText
         android:id="@+id/etPrompt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
+        android:layout_marginEnd="4dp"
+        android:ems="12"
         android:hint="Enter your message..."
+        android:fontFamily="@font/en_title_font"
+        android:textStyle="bold"
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btSend"
@@ -37,6 +64,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Send"
+        android:textStyle="bold"
+        android:fontFamily="@font/en_title_font"
         app:layout_constraintBottom_toBottomOf="@+id/etPrompt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/etPrompt" />
