@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -23,7 +22,6 @@ import com.unfbx.chatgpt.entity.chat.ChatCompletion;
 import com.unfbx.chatgpt.entity.chat.ChatCompletionResponse;
 import com.unfbx.chatgpt.entity.chat.Message;
 import com.unfbx.chatgpt.function.KeyRandomStrategy;
-import com.unfbx.chatgpt.utils.TikTokensUtil;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -31,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import bdic.comp3011j.readpaper.Adapter.ChatAdapter;
 import bdic.comp3011j.readpaper.Application.AppApplication;
 import bdic.comp3011j.readpaper.BmobEntity.Chat;
@@ -44,6 +41,7 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 import okhttp3.OkHttpClient;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
@@ -58,10 +56,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private final Runnable finishActivityTask = new Runnable() {
         @Override
         public void run() {
-            // 当一分钟过去后，结束Activity
+            // 当120s过去后，结束Activity
             finish();
         }
     };
+
+    private final int UPDATE_CONTEXT_THRESHOLD = 6;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -148,7 +148,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         // 用户离开Activity时开始计时
-        handler.postDelayed(finishActivityTask, 60000); // 60000毫秒后执行run方法
+        handler.postDelayed(finishActivityTask, 120000); // 120000毫秒后执行run方法
     }
 
     @Override
@@ -209,7 +209,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 // 构建本次交互的消息列表
-                List<Message> messages = constructChatMessages(prompt);
+                List<Message> messages = constructChatMessages(prompt, chatList);
 
                 for (Message message : messages) {
                     Log.d("ChatActivity", "Message Role: " + message.getRole());
@@ -235,13 +235,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onSuccess(String objectId) { // 添加完成后,向chatList和messages中添加本次用户输入
                                 chatList.add(new Chat(objectId, prompt, MessageType.USER.toString()));
-                                Log.d("ChatActivity", "USER Content: " +  chatList.get(chatList.size() - 1).getContent());
+                                Log.d("ChatActivity", "USER Content: " + chatList.get(chatList.size() - 1).getContent());
                                 // 插入OpenAI的响应(保证了类型为USER的Chat总是在类型为ASSISTANT的Chat之前被插入数据库)
                                 insertChat(response, MessageType.ASSISTANT, new InsertCallback() {
                                     @Override
                                     public void onSuccess(String objectId) {
                                         chatList.add(new Chat(objectId, response, MessageType.ASSISTANT.toString()));
-                                        Log.d("ChatActivity", "ASSISTANT Content: " +  chatList.get(chatList.size() - 1).getContent());
+                                        Log.d("ChatActivity", "ASSISTANT Content: " + chatList.get(chatList.size() - 1).getContent());
                                         // 更新UI界面
                                         runOnUiThread(new Runnable() {
                                             @Override
@@ -252,7 +252,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                                                 etPrompt.setText(""); // 清空输入框
                                             }
                                         });
-                                        updateSystemMessage();
+                                        messages.add(Message.builder()
+                                                .role(Message.Role.ASSISTANT)
+                                                .content(response)
+                                                .build());
+                                        updateSystemMessage(messages);
                                     }
 
                                     @Override
@@ -276,25 +280,119 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void updateSystemMessage() { //用于更新系统消息(即,语境)
+    private void updateSystemMessage(List<Message> messages) { //用于更新系统消息(即,语境)
+        // 从Bmob数据库中的Chat表获取所有与当前Paper有关的聊天记录
+        queryPaperRelatedChats(currentPaper, new QueryCallback<Chat>() {
+            @Override
+            public void onSuccess(List<Chat> queryResult) {
+                if ((queryResult.size() - 1) % UPDATE_CONTEXT_THRESHOLD == 0) { // 如果(queryResult.size() - 1) % UPDATE_CONTEXT_THRESHOLD = 0,此时说明需要更新系统消息
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 根据设备类型设置代理并创建OpenAI客户端:
+                            OpenAiClient openAiClient;
+                            String deviceType = getSharedPreferences("ReadPaper", Context.MODE_PRIVATE).getString("device", "Physical");
+                            if (deviceType.equals("Physical")) {
+                                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                                        .connectTimeout(120, TimeUnit.SECONDS)
+                                        .writeTimeout(120, TimeUnit.SECONDS)
+                                        .readTimeout(120, TimeUnit.SECONDS)
+                                        .build();
+                                // 创建OpenAI客户端
+                                openAiClient = OpenAiClient.builder()
+                                        .okHttpClient(okHttpClient)
+                                        .apiKey(Arrays.asList("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", "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"))
+                                        .keyStrategy(new KeyRandomStrategy())
+                                        .apiHost("https://api.openai-proxy.com")
+                                        .build();
+                            } else {
+                                // 自定义网络代理和okHttpClient
+                                int proxyPort = Integer.parseInt(getSharedPreferences("ReadPaper", Context.MODE_PRIVATE).getString("proxyPort", "7890"));
+                                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.0.2.2", proxyPort));
+                                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                                        //.proxy(proxy)
+                                        .connectTimeout(120, TimeUnit.SECONDS)
+                                        .writeTimeout(120, TimeUnit.SECONDS)
+                                        .readTimeout(120, TimeUnit.SECONDS)
+                                        .build();
+                                // 创建OpenAI客户端
+                                openAiClient = OpenAiClient.builder()
+                                        .okHttpClient(okHttpClient)
+                                        .apiKey(Arrays.asList("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", "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"))
+                                        .keyStrategy(new KeyRandomStrategy())
+                                        .apiHost("https://api.openai-proxy.com")
+                                        .build();
+                            }
 
+                            // 构建本次交互的消息列表
+                            messages.add(Message.builder()
+                                    .role(Message.Role.USER)
+                                    .content("Please summarize our previous chat")
+                                    .build());
+
+                            // 构造ChatCompletion对象以加载聊天记录以及模型参数
+                            ChatCompletion chatCompletion = ChatCompletion
+                                    .builder()
+                                    .messages(messages)
+                                    .model(ChatCompletion.Model.GPT_3_5_TURBO_16K.getName())
+                                    //.maxTokens(4096 - TikTokensUtil.tokens(ChatCompletion.Model.GPT_3_5_TURBO_16K.getName(), messages))
+                                    .build();
+
+                            // 获取OpenAI的响应
+                            try {
+                                ChatCompletionResponse chatCompletionResponse = openAiClient.chatCompletion(chatCompletion);
+                                String response = chatCompletionResponse.getChoices().get(0).getMessage().getContent();
+                                // 更新SYSTEM的content
+                                Chat systemChat = chatList.get(0);
+                                systemChat.setContent(response);
+                                systemChat.update(systemChat.getObjectId(), new UpdateListener() {
+                                    @Override
+                                    public void done(BmobException e) {
+                                        if (e == null) {
+                                            chatList.get(0).setContent(response);
+                                            Log.d("ChatActivity", "Update SYSTEM Content Success!");
+                                        } else {
+                                            Log.d("ChatActivity", "Update SYSTEM Content Failed: " + e.getMessage());
+                                        }
+                                    }
+                                });
+                            } catch (Exception e) {
+                                Log.e("ChatActivity", "Error interacting with OpenAI: ", e);
+                            }
+                        }
+                    }).start();
+                }
+            }
+            @Override
+            public void onFail(String errorMessage) {
+                Toast.makeText(ChatActivity.this, "History Chats failed load: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private List<Message> constructChatMessages(String prompt) {
+    private List<Message> constructChatMessages(String prompt, List<Chat> chatList) {
         List<Message> messages = new ArrayList<>();
-        // 向messages中添加历史聊天记录
-        for (Chat chat : chatList) {
-            Message.Builder messageBuilder = Message.builder().content(chat.getContent());
-            if (chat.getType().equals(MessageType.USER.toString())) {
-                messageBuilder.role(Message.Role.USER);
-            } else if (chat.getType().equals(MessageType.ASSISTANT.toString())) {
-                messageBuilder.role(Message.Role.ASSISTANT);
-            } else if (chat.getType().equals(MessageType.SYSTEM.toString())) {
-                messageBuilder.role(Message.Role.SYSTEM);
-            }
-            if (chat.getType().equals(MessageType.SYSTEM.toString())) {
-                messages.add(0, messageBuilder.build());
-            } else {
+        // 计算已经被语境覆盖的聊天记录数量
+        int coveredChatRange = ((chatList.size() - 1) / UPDATE_CONTEXT_THRESHOLD) * UPDATE_CONTEXT_THRESHOLD;
+        // 计算需要被添加到messages中的聊天记录数量
+        int reminder = (chatList.size() - 1) - coveredChatRange;
+
+        // 添加系统语境
+        messages.add(0, Message.builder()
+                .role(Message.Role.SYSTEM)
+                .content(chatList.get(0).getContent())
+                .build());
+        if (reminder > 0) {
+            List<Chat> remindingChats = chatList.subList(chatList.size() - reminder, chatList.size());
+            for (Chat chat : remindingChats) {
+                Message.Builder messageBuilder = Message.builder().content(chat.getContent());
+                if (chat.getType().equals(MessageType.USER.toString())) {
+                    messageBuilder.role(Message.Role.USER);
+                } else if (chat.getType().equals(MessageType.ASSISTANT.toString())) {
+                    messageBuilder.role(Message.Role.ASSISTANT);
+                } else if (chat.getType().equals(MessageType.SYSTEM.toString())) {
+                    messageBuilder.role(Message.Role.SYSTEM);
+                }
                 messages.add(messageBuilder.build());
             }
         }
