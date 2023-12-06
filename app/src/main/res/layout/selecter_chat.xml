@@ -3,20 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="4dp">
+    android:padding="4dp"
+    android:background="#F4DFC9">
 
     <TextView
         android:id="@+id/tvRole"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
-        android:textSize="25sp" />
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/en_title_font"
+        android:textColor="#333333" />
 
     <TextView
         android:id="@+id/tvContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left|center"
-        android:textSize="20sp" />
-
+        android:textSize="20sp"
+        android:fontFamily="@font/en_body_font"
+        android:textColor="#292727" />
 </LinearLayout>

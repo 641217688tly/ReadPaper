@@ -1,44 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="4dp"
+    android:background="#F4DFC9">
 
+    <!-- 应用标题 -->
+    <TextView
+        android:id="@+id/tvRegisterTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register to ReadPaper"
+        android:textSize="25sp"
+        android:textColor="#FF5722"
+        android:textStyle="bold"
+        android:fontFamily="@font/en_title_font"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- 应用图标 -->
+    <ImageView
+        android:id="@+id/ivRegisterAppIcon"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/poster"
+        app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <!-- 用户名输入框 -->
     <EditText
         android:id="@+id/etUsername"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Username" />
+        android:hint="Username"
+        android:fontFamily="@font/en_body_font"
+        app:layout_constraintTop_toBottomOf="@+id/ivRegisterAppIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
 
+    <!-- Email 输入框 -->
     <EditText
         android:id="@+id/etEmail"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:fontFamily="@font/en_body_font"
+        android:inputType="textEmailAddress"
+        app:layout_constraintTop_toBottomOf="@+id/etUsername"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
 
+    <!-- 密码输入框 -->
     <EditText
         android:id="@+id/etPassword"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Password"
-        android:inputType="textPassword" />
+        android:fontFamily="@font/en_body_font"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@+id/etEmail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
 
+    <!-- 确认密码输入框 -->
     <EditText
         android:id="@+id/etPasswordConfirm"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Confirm Password"
-        android:inputType="textPassword" />
+        android:fontFamily="@font/en_body_font"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@+id/etPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
 
+    <!-- 注册按钮 -->
     <Button
         android:id="@+id/btnRegister"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Register" />
-</LinearLayout>
-
-
+        android:text="Register"
+        android:fontFamily="@font/en_title_font"
+        app:layout_constraintTop_toBottomOf="@+id/etPasswordConfirm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

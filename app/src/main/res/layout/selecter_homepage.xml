@@ -3,19 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="4dp">
+    android:padding="4dp"
+    android:background="#F4DFC9">
 
+    <!-- 标题栏布局 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="0.2"
+            android:layout_weight="0.25"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="Title:" />
+            android:text="Title"
+            android:textStyle="bold"
+            android:textColor="#FF9800"
+            android:fontFamily="@font/en_title_font"/>
 
         <TextView
             android:id="@+id/tvTitle"
@@ -23,22 +29,28 @@
             android:layout_weight="0.8"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:hint="Paper Title" />
+            android:hint="Paper Title"
+            android:textColor="#333333"
+            android:fontFamily="@font/en_body_font" />
 
     </LinearLayout>
 
+    <!-- 作者栏布局 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="0.2"
+            android:layout_weight="0.25"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="Author(s):" />
-
+            android:text="Authors"
+            android:textStyle="bold"
+            android:textColor="#FF9800"
+            android:fontFamily="@font/en_title_font"/>
 
         <TextView
             android:id="@+id/tvAuthor"
@@ -46,59 +58,71 @@
             android:layout_weight="0.8"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:hint="Paper Author(s)" />
+            android:hint="Paper Author(s)"
+            android:textColor="#333333"
+            android:fontFamily="@font/en_body_font" />
 
     </LinearLayout>
 
+    <!-- 创建时间栏布局 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <TextView
             android:layout_width="0dp"
+            android:layout_weight="0.25"
             android:layout_height="match_parent"
-            android:layout_weight="0.2"
             android:gravity="center"
-            android:text="Created Time:" />
-
+            android:text="Created Time"
+            android:textStyle="bold"
+            android:textColor="#FF9800"
+            android:fontFamily="@font/en_title_font"/>
 
         <TextView
             android:id="@+id/tvCreatedTime"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="0.8"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:hint="Created Time"
+            android:textColor="#333333"
+            android:fontFamily="@font/en_body_font"/>
 
-        />
     </LinearLayout>
 
+    <!-- 按钮栏布局 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <Button
             android:id="@+id/btnEdit"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Edit" />
+            android:text="Edit"
+            android:fontFamily="@font/en_title_font"/>
 
         <Button
             android:id="@+id/btnView"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="View"/>
+            android:text="View"
+            android:fontFamily="@font/en_title_font"/>
 
         <Button
             android:id="@+id/btnDelete"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Delete" />
+            android:text="Delete"
+            android:fontFamily="@font/en_title_font"/>
 
     </LinearLayout>
 

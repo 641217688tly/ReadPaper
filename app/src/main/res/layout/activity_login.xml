@@ -1,64 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="4dp"
+    android:background="#F4DFC9"
+    >
 
+    <!-- 应用标题 -->
+    <TextView
+        android:id="@+id/tvLoginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome to ReadPaper!"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="#FF5722"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/en_title_font"
+        />
+
+    <!-- 应用图标 -->
+    <ImageView
+        android:id="@+id/ivAppIcon"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/poster"
+        app:layout_constraintTop_toBottomOf="@+id/tvLoginTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <!-- 登录类型选择 -->
     <RadioGroup
         android:id="@+id/rgLoginType"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/ivAppIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
 
         <RadioButton
             android:id="@+id/rbPhysicalDevice"
             android:layout_width="wrap_content"
+            android:layout_weight="0.5"
             android:layout_height="wrap_content"
-            android:text="Physical Device Login"/>
+            android:fontFamily="@font/en_body_font"
+            android:text="Physical Device"/>
 
         <RadioButton
             android:id="@+id/rbVirtualDevice"
+            android:layout_weight="0.5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Virtual Device Login"/>
+            android:fontFamily="@font/en_body_font"
+            android:text="Virtual Device"/>
     </RadioGroup>
 
 
+    <!-- Email 输入框 -->
     <EditText
         android:id="@+id/etEmail"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:fontFamily="@font/en_body_font"
+        android:inputType="textEmailAddress"
+        app:layout_constraintTop_toBottomOf="@+id/rgLoginType"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
 
+    <!-- 密码输入框 -->
     <EditText
         android:id="@+id/etPassword"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Password"
-        android:inputType="textPassword" />
+        android:fontFamily="@font/en_body_font"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@+id/etEmail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
 
+    <!-- 代理端口输入框 -->
     <EditText
         android:id="@+id/etProxyPort"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:hint="Proxy Port"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/etPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
 
-    <Button
-        android:id="@+id/btnGoToRegister"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register" />
-
+    <!-- 登录按钮 -->
     <Button
         android:id="@+id/btnLogin"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Login" />
-</LinearLayout>
+        android:text="Login"
+        android:fontFamily="@font/en_title_font"
+        app:layout_constraintTop_toBottomOf="@+id/etProxyPort"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
 
+    <!-- 注册按钮 -->
+    <Button
+        android:id="@+id/btnGoToRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:fontFamily="@font/en_title_font"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="4dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
