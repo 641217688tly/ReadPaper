@@ -34,6 +34,7 @@ public class CustomDocumentActivity extends DocumentActivity{
         handler.postDelayed(finishActivityTask, 60000); // 60000毫秒后执行run方法
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
