@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="4dp"/>
 
     <!-- 应用图标 -->
     <ImageView
@@ -31,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="4dp"/>
 
     <!-- 用户名输入框 -->
     <EditText
@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ivRegisterAppIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="8dp"/>
 
     <!-- Email 输入框 -->
     <EditText
@@ -56,7 +56,7 @@
         app:layout_constraintTop_toBottomOf="@+id/etUsername"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="4dp"/>
 
     <!-- 密码输入框 -->
     <EditText
@@ -69,7 +69,7 @@
         app:layout_constraintTop_toBottomOf="@+id/etEmail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="4dp"/>
 
     <!-- 确认密码输入框 -->
     <EditText
@@ -82,7 +82,7 @@
         app:layout_constraintTop_toBottomOf="@+id/etPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="4dp"/>
 
     <!-- 注册按钮 -->
     <Button
@@ -94,5 +94,5 @@
         app:layout_constraintTop_toBottomOf="@+id/etPasswordConfirm"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="4dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

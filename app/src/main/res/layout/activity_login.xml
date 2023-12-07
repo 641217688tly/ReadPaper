@@ -88,19 +88,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
-    <!-- 代理端口输入框 -->
-    <EditText
-        android:id="@+id/etProxyPort"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:hint="Proxy Port"
-        android:inputType="number"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
-
     <!-- 登录按钮 -->
     <Button
         android:id="@+id/btnLogin"
@@ -111,7 +98,7 @@
         android:text="Login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etProxyPort" />
+        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
     <!-- 注册按钮 -->
     <Button
