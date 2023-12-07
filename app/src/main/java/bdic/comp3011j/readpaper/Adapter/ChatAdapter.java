@@ -42,15 +42,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
         }
         Chat chat = chatList.get(position);
         // 当类型为SYSTEM时，隐藏该条目，否则显示
-//        if (chat.getType().equals(MessageType.SYSTEM.toString())) {
-//            holder.tvRole.setText(chat.getType());
-//            holder.tvContent.setText(chat.getContent());
-//            holder.itemView.setVisibility(View.GONE);
-//            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0)); // 将高度设为0
-//        } else {
-//            holder.tvRole.setText(chat.getType());
-//            holder.tvContent.setText(chat.getContent());
-//        }
         holder.tvRole.setText(chat.getType());
         holder.tvContent.setText(chat.getContent());
 

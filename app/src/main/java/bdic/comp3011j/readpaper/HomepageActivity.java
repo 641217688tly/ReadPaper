@@ -114,51 +114,24 @@ public class HomepageActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // 处理菜单项的点击事件
-        int id = item.getItemId();
-        if (id == R.id.addPaper) {
+        if (item.getItemId() == R.id.addPaper) {
             // 用户点击了添加按钮
             Intent intent = new Intent(this, AddPaperActivity.class);
             startActivity(intent);
+            return true;
+        } else if (item.getItemId() == R.id.logout) {
+            // 用户点击了注销按钮
+            BmobUser.logOut();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void viewPDF(String url, Context context) {
-        if (true) { // 暂时先使用PDFTron的SDK
-            CustomDocumentActivity.viewPDF(url, context);
-        } else { // PSPDFKit的SDK
-            final DownloadRequest request = new DownloadRequest.Builder(context)
-                    .uri(url)
-                    .build();
-            final DownloadJob job = DownloadJob.startDownload(request);
-
-            final PdfActivityConfiguration config = new PdfActivityConfiguration
-                    .Builder(context)
-                    .build();
-            job.setProgressListener(new DownloadJob.ProgressListenerAdapter() {
-                @Override
-                public void onProgress(Progress progress) {
-                    //progressBar.setProgress((int) (100 * progress.bytesReceived / (float) progress.totalBytes));
-                }
-
-                @Override
-                public void onComplete(File output) {
-                    //PdfFragment pdfFragment = PdfFragment.newImageInstance(Uri.fromFile(output), config.getConfiguration());
-                    //pdfFragment.addDocumentListener();
-                    Intent intent = PdfActivityIntentBuilder.fromUri(context, Uri.fromFile(output))
-                            .configuration(config)
-                            .activityClass(CustomPdfActivity.class)
-                            .build();
-                    startActivity(intent);
-                }
-
-                @Override
-                public void onError(Throwable exception) {
-                    //handleDownloadError(exception);
-                }
-            });
-        }
+        CustomDocumentActivity.viewPDF(url, context);
     }
 
     public void deletePaper(Paper paper, List<Paper> paperList, int position) {
@@ -246,6 +219,7 @@ public class HomepageActivity extends AppCompatActivity {
                                 });
                             }
                         }
+
                         @Override
                         public void onFail(String reason) {
                             // 查询失败
