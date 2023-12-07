@@ -23,11 +23,11 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.SaveListener;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private SharedPreferences sharedPreferences;
     private RadioGroup rgLoginType;
     private EditText etEmail, etPassword;
-    private Button btnLogin,btnGoToRegister;
+    private Button btnLogin, btnGoToRegister;
 
 
     @Override
@@ -85,12 +85,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     Intent intent = new Intent(LoginActivity.this, HomepageActivity.class);
                     startActivity(intent);
+                    finish(); // 销毁登录页面
                 } else { // 登录失败
                     Toast.makeText(LoginActivity.this, "Failed Login: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
 
     private void saveUserInfo(String email, String password) {

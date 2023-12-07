@@ -31,7 +31,7 @@ public class CustomDocumentActivity extends DocumentActivity{
     protected void onPause() {
         super.onPause();
         // 用户离开Activity时开始计时
-        handler.postDelayed(finishActivityTask, 60000); // 60000毫秒后执行run方法
+        handler.postDelayed(finishActivityTask, 60000); // 40000毫秒后执行run方法
     }
 
 
@@ -90,6 +90,5 @@ public class CustomDocumentActivity extends DocumentActivity{
                 .build();
         context.startActivity(intent);
     }
-
 
 }

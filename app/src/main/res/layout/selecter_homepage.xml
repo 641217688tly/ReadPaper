@@ -35,6 +35,14 @@
 
     </LinearLayout>
 
+    <!-- 分割线 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:background="#2E1707" />
+
     <!-- 作者栏布局 -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -64,6 +72,14 @@
 
     </LinearLayout>
 
+    <!-- 分割线 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:background="#2E1707" />
+
     <!-- 创建时间栏布局 -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -90,8 +106,15 @@
             android:hint="Created Time"
             android:textColor="#333333"
             android:fontFamily="@font/en_body_font"/>
-
     </LinearLayout>
+
+    <!-- 分割线 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:background="#2E1707" />
 
     <!-- 按钮栏布局 -->
     <LinearLayout
@@ -125,5 +148,6 @@
             android:fontFamily="@font/en_title_font"/>
 
     </LinearLayout>
+
 
 </LinearLayout>

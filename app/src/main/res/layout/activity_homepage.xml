@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4DFC9"
+    android:background="#59EAC9A8"
     android:orientation="vertical"
-    android:padding="4dp">
+    >
 
     <!-- 应用标题或图标 -->
     <TextView
@@ -24,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
         android:background="#2196F3" />
 
     <!-- RecyclerView -->

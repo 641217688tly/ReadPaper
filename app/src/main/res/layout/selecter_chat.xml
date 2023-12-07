@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="4dp"
+    android:padding="2dp"
     android:background="#F4DFC9">
 
     <TextView
@@ -24,4 +24,11 @@
         android:textSize="20sp"
         android:fontFamily="@font/en_body_font"
         android:textColor="#292727" />
+
+    <!-- 分割线 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#2E1707" />
+
 </LinearLayout>
