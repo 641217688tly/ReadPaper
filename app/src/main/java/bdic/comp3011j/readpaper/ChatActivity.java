@@ -61,7 +61,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-    private final int UPDATE_CONTEXT_THRESHOLD = 6;
+    private final int UPDATE_CONTEXT_THRESHOLD = 20;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

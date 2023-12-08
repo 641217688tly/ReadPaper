@@ -25,58 +25,72 @@
         android:theme="@style/Theme.ReadPaper"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
-            android:name=".EditPaperActivity"
-            android:exported="false" />
 
         <meta-data
             android:name="pdftron_license_key"
             android:value="${pdftronLicenseKey}" />
 
         <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".EditPaperActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".AddPaperActivity"
             android:exported="false" />
+
         <activity
             android:name=".HomepageActivity"
             android:exported="false" />
+
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
+
         <activity
             android:name=".ChatActivity"
             android:exported="false" />
+
         <activity
             android:name="com.pdftron.pdf.controls.DocumentActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/PDFTronAppTheme"
             android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".CustomDocumentActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
             android:exported="false"
             android:theme="@style/PDFTronAppTheme"
             android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name="com.pspdfkit.ui.PdfActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="adjustNothing" />
+
         <activity
             android:name=".CustomPdfActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="adjustNothing" />
+
         <activity
-            android:name=".LoginActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- 添加ContentProvider信息 -->
+        </activity>
+
+        <!-- 添加ContentProvider信息 -->
         <provider
             android:name="cn.bmob.v3.util.BmobContentProvider"
-            android:authorities="bdic.comp3011j.readpaper.BmobContentProvider"></provider>
+            android:authorities="bdic.comp3011j.readpaper.BmobContentProvider" />
     </application>
 
 </manifest>
