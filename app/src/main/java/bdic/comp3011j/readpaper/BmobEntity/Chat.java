@@ -6,9 +6,9 @@ public class Chat extends BmobObject {
 
     private Paper paper;
 
-    private String content;  //消息内容
+    private String content;  //message content
 
-    private String type; //消息类型
+    private String type; //Message type
 
     public Paper getPaper() {
         return paper;

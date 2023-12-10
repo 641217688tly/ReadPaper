@@ -8,7 +8,7 @@
     android:padding="4dp"
     tools:context=".ChatActivity">
 
-    <!-- 应用标题 -->
+    <!-- Application Title -->
     <TextView
         android:id="@+id/tvChatTitle"
         android:layout_width="wrap_content"
@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- 分割线 -->
+    <!-- Divider Line -->
     <View
         android:id="@+id/viewDivider"
         android:layout_width="0dp"
@@ -33,7 +33,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- 聊天记录的RecyclerView -->
+    <!-- RecyclerView for Chat History -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChat"
         android:layout_width="0dp"
@@ -43,7 +43,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvChatTitle" />
 
-    <!-- 输入新消息的EditText -->
+    <!-- EditText for Typing New Messages -->
     <EditText
         android:id="@+id/etPrompt"
         android:layout_width="0dp"
@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toStartOf="@+id/btSend"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- 发送按钮 -->
+    <!-- Send Button -->
     <Button
         android:id="@+id/btSend"
         android:layout_width="wrap_content"

@@ -9,8 +9,6 @@ public class Paper extends BmobObject{
     private String author;
     private String url;
 
-    // 考虑是否创建一个year属性来存储论文发表年份
-
     public BmobUser getUser() {
         return user;
     }

@@ -8,7 +8,7 @@
     android:background="#F4DFC9"
     tools:context=".AddPaperActivity">
 
-    <!-- 应用标题 -->
+    <!-- Application Title -->
     <TextView
         android:id="@+id/tvRegisterTitle"
         android:layout_width="wrap_content"
@@ -21,7 +21,7 @@
         android:fontFamily="@font/en_title_font"
         android:layout_marginTop="4dp"/>
 
-    <!-- 应用图标 -->
+    <!-- Application Icon -->
     <ImageView
         android:id="@+id/ivRegisterAppIcon"
         android:layout_width="250dp"
@@ -30,7 +30,7 @@
         android:layout_gravity="center"
         android:layout_margin="4dp"/>
 
-    <!-- 标题输入框 -->
+    <!-- Title Input Field -->
     <EditText
         android:id="@+id/etTitle"
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
         android:fontFamily="@font/en_title_font"
         android:layout_marginBottom="4dp"/>
 
-    <!-- 作者输入框 -->
+    <!-- Author Input Field -->
     <EditText
         android:id="@+id/etAuthor"
         android:textStyle="bold"
@@ -50,7 +50,7 @@
         android:fontFamily="@font/en_title_font"
         android:layout_marginBottom="4dp"/>
 
-    <!-- 文件类型选择 -->
+    <!-- File Type Selection -->
     <RadioGroup
         android:id="@+id/rgFileType"
         android:layout_width="match_parent"
@@ -75,7 +75,7 @@
             android:fontFamily="@font/en_body_font"/>
     </RadioGroup>
 
-    <!-- URL输入框 -->
+    <!-- URL Input Field -->
     <EditText
         android:id="@+id/etUrl"
         android:layout_width="match_parent"
@@ -85,7 +85,7 @@
         android:visibility="gone"
         android:layout_marginBottom="4dp"/>
 
-    <!-- 选择文件按钮 -->
+    <!-- Choose File Button -->
     <Button
         android:id="@+id/btnChooseFile"
         android:layout_width="match_parent"
@@ -95,7 +95,7 @@
         android:visibility="gone"
         android:layout_marginBottom="4dp"/>
 
-    <!-- 文件上传进度条 -->
+    <!-- File Upload Progress Bar -->
     <ProgressBar
         android:id="@+id/pbFileUpload"
         style="?android:attr/progressBarStyleHorizontal"
@@ -105,7 +105,7 @@
         android:visibility="gone"
         android:layout_marginBottom="4dp"/>
 
-    <!-- 添加论文按钮 -->
+    <!-- Add Paper Button -->
     <Button
         android:id="@+id/btnAddPaper"
         android:layout_width="match_parent"

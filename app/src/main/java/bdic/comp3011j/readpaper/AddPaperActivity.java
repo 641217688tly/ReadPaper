@@ -1,4 +1,5 @@
 package bdic.comp3011j.readpaper;
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.Intent;
@@ -30,20 +31,20 @@ import cn.bmob.v3.listener.UploadFileListener;
 
 public class AddPaperActivity extends AppCompatActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1; // 权限请求码
-    private static final int PICK_PDF_FILE = 2;  // 请求码，用于在 onActivityResult 中识别返回的结果
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1; // Permission request code
+    private static final int PICK_PDF_FILE = 2;  // Request code to identify results in onActivityResult
     private EditText etTitle, etAuthor, etUrl;
     private RadioGroup rgFileType;
     private Button btnChooseFile, btnAddPaper;
     private ProgressBar pbFileUpload;
-    private Uri fileUri;  // 存储用户所上传/选中的PDF文件的Uri
+    private Uri fileUri;  // Store the Uri of the PDF file uploaded/selected by the user
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_paper);
 
-        // 初始化组件
+        // Initialize components
         etTitle = findViewById(R.id.etTitle);
         etAuthor = findViewById(R.id.etAuthor);
         etUrl = findViewById(R.id.etUrl);
@@ -51,17 +52,18 @@ public class AddPaperActivity extends AppCompatActivity implements View.OnClickL
         btnChooseFile = findViewById(R.id.btnChooseFile);
         btnAddPaper = findViewById(R.id.btnAddPaper);
         pbFileUpload = findViewById(R.id.pbFileUpload);
-        // 设置监听器
+
+        // Set listeners
         rgFileType.setOnCheckedChangeListener(this);
         btnChooseFile.setOnClickListener(this);
         btnAddPaper.setOnClickListener(this);
     }
 
-    // 处理 RadioGroup 状态变化的回调方法
+    // Handle the change of RadioGroup state
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-        if(radioGroup.getId() == R.id.rgFileType){
-            // 根据用户选择的添加论文方式，显示或隐藏相关组件
+        if (radioGroup.getId() == R.id.rgFileType) {
+            // Show or hide relevant components based on the user's choice of adding a paper
             if (checkedId == R.id.rbUrl) {
                 etUrl.setVisibility(View.VISIBLE);
                 btnChooseFile.setVisibility(View.GONE);
@@ -72,20 +74,20 @@ public class AddPaperActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    // 处理点击事件的回调方法
+    // Handle click events
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnChooseFile) {
-            // 创建选择文件的 Intent
+            // Create an Intent to choose a file
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                // 权限未被授予
+                // Permission not granted
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
             } else {
-                // 权限已被授予
+                // Permission granted
                 openFilePicker();
             }
         } else if (view.getId() == R.id.btnAddPaper) {
-            // 添加论文
+            // Add a paper
             insertPaper();
         }
     }
@@ -101,57 +103,59 @@ public class AddPaperActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    // 运行时权限请求回调方法
+    // Runtime permission request callback
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 权限被授予，打开文件选择器
+                // Permission granted, open file picker
                 openFilePicker();
             } else {
-                // 权限被拒绝，向用户解释
-                Toast.makeText(this, "Permission Denied. Please allow Read External Storage to choose file.", Toast.LENGTH_LONG).show();
+                // Permission denied, explain to the user
+                Toast.makeText(this, "Permission Denied. Please allow Read External Storage to choose a file.", Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    // 处理返回的结果
+    // Handle the result of the file selection
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_PDF_FILE && resultCode == RESULT_OK && data != null) { // 用户选中的文件且文件的数据不为null
-            // 获取选中文件的 Uri
+        if (requestCode == PICK_PDF_FILE && resultCode == RESULT_OK && data != null) { // User selected a file and file data is not null
+            // Get the Uri of the selected file
             fileUri = data.getData();
             Toast.makeText(this, "File selected: " + fileUri.getPath(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    // 添加论文的方法
+    // Method to add a paper
     private void insertPaper() {
-        // 获取用户输入的数据
+        // Get user input data
         String title = etTitle.getText().toString().trim();
         String author = etAuthor.getText().toString().trim();
         String url = etUrl.getText().toString().trim();
 
-        // 检查输入的完整性
+        // Check input completeness
         if (title.isEmpty() || author.isEmpty() || (etUrl.getVisibility() == View.VISIBLE && url.isEmpty() && fileUri == null)) {
             Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-        // 获取当前登录的用户
+        // Get the currently logged-in user
         BmobUser currentUser = BmobUser.getCurrentUser(BmobUser.class);
         if (currentUser == null) {
             Toast.makeText(this, "Please log in first", Toast.LENGTH_SHORT).show();
             return;
         }
-        // 创建 Paper 对象并设置属性
+
+        // Create a Paper object and set its attributes
         Paper paper = new Paper();
         paper.setUser(currentUser);
         paper.setTitle(title);
         paper.setAuthor(author);
-        // 根据用户选择的添加方式，设置 URL 或文件
-        if (etUrl.getVisibility() == View.VISIBLE) { // 用户输入了URL
+
+        // Depending on the user's choice of adding method, set URL or file
+        if (etUrl.getVisibility() == View.VISIBLE) { // User entered a URL
             paper.setUrl(url);
             paper.save(new SaveListener<String>() {
                 @Override
@@ -164,12 +168,12 @@ public class AddPaperActivity extends AppCompatActivity implements View.OnClickL
                     }
                 }
             });
-        } else if (fileUri != null) { // 用户上传了文件
+        } else if (fileUri != null) { // User uploaded a file
             uploadFileAndSavePaper(fileUri, paper);
         }
     }
 
-    // 上传文件并保存Paper对象
+    // Upload a file and save a Paper object
     private void uploadFileAndSavePaper(Uri fileUri, Paper paper) {
         String filePath = copyFileToInternalStorage(fileUri, "pdfs");
         if (filePath == null) {
@@ -177,14 +181,14 @@ public class AddPaperActivity extends AppCompatActivity implements View.OnClickL
             return;
         }
         final BmobFile bmobFile = new BmobFile(new File(filePath));
-        pbFileUpload.setVisibility(View.VISIBLE);  // 显示进度条
+        pbFileUpload.setVisibility(View.VISIBLE);  // Show progress bar
         bmobFile.uploadblock(new UploadFileListener() {
             @Override
             public void done(BmobException e) {
-                pbFileUpload.setVisibility(View.GONE); // 上传结束后隐藏进度条
-                new File(filePath).delete(); // 删除临时文件
+                pbFileUpload.setVisibility(View.GONE); // Hide progress bar after upload
+                new File(filePath).delete(); // Delete temporary file
                 if (e == null) {
-                    // 上传文件成功，获取文件的URL并保存Paper对象
+                    // Upload file successful, get file URL and save Paper object
                     paper.setUrl(bmobFile.getFileUrl());
                     paper.save(new SaveListener<String>() {
                         @Override
@@ -198,27 +202,24 @@ public class AddPaperActivity extends AppCompatActivity implements View.OnClickL
                         }
                     });
                 } else {
-                    // 上传文件失败
+                    // Upload file failed
                     Toast.makeText(AddPaperActivity.this, "Failed to upload file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
             public void onProgress(Integer value) {
-                // 可以使用进度值更新UI
+                // Update UI with progress value
                 pbFileUpload.setProgress(value);
             }
         });
     }
 
-    // 复制文件到内部存储
+    // Copy file to internal storage
     private String copyFileToInternalStorage(Uri uri, String newDirName) {
         Uri returnUri = uri;
         Cursor returnCursor = getContentResolver().query(returnUri, null, null, null, null);
-        /*
-         * Get the column indexes of the data in the Cursor,
-         * move to the first row in the Cursor, get the data,
-         * and display it.
-         */
+        // Get the column indexes of the data in the Cursor, move to the first row in the Cursor, get the data, and display it.
         int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
         returnCursor.moveToFirst();
         String name = (returnCursor.getString(nameIndex));
@@ -245,5 +246,4 @@ public class AddPaperActivity extends AppCompatActivity implements View.OnClickL
         returnCursor.close();
         return fileCopy.getPath();
     }
-
 }

@@ -16,6 +16,6 @@ public class SplashActivity extends AppCompatActivity {
             Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
-        }, 3000); // 3000ms = 3秒后跳转
+        }, 3000); // 3000ms = Jump in 3 seconds
     }
 }

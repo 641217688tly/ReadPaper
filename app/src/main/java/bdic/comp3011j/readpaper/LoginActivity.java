@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnGoToRegister = findViewById(R.id.btnGoToRegister);
-        // 注册按钮监听事件
+        // Register button click listeners
         btnLogin.setOnClickListener(this);
         btnGoToRegister.setOnClickListener(this);
 
@@ -79,14 +79,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         BmobUser.loginByAccount(email, password, new LogInListener<BmobUser>() {
             @Override
             public void done(BmobUser bmobUser, BmobException e) {
-                if (e == null) { // 成功登录
+                if (e == null) { // Successfully logged in
                     Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
                     saveUserInfo(email, password);
 
                     Intent intent = new Intent(LoginActivity.this, HomepageActivity.class);
                     startActivity(intent);
-                    finish(); // 销毁登录页面
-                } else { // 登录失败
+                    finish(); // Destroy the login page
+                } else { // Login failed
                     Toast.makeText(LoginActivity.this, "Failed Login: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -105,5 +105,4 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         editor.apply();
     }
-
 }

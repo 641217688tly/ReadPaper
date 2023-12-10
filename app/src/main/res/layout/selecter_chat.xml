@@ -25,7 +25,7 @@
         android:fontFamily="@font/en_body_font"
         android:textColor="#292727" />
 
-    <!-- 分割线 -->
+    <!-- Parting line -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

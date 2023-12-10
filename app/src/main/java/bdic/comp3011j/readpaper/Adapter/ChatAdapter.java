@@ -80,7 +80,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
         this.onClickListener = onRecyclerItemClickListener;
     }
 
-    public interface OnRecyclerItemClickListener { // 设置Item的点击监听器的接口
+    public interface OnRecyclerItemClickListener { // Sets the interface for Item's click listener
         void OnRecyclerItemClick(int position);
     }
 }

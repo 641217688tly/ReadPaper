@@ -6,7 +6,7 @@
     android:orientation="vertical"
     >
 
-    <!-- 应用标题或图标 -->
+    <!-- Application Title or Icon -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <!-- 分割线 -->
+    <!-- Divider Line -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

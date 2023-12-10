@@ -7,7 +7,7 @@
     android:padding="4dp"
     android:background="#F4DFC9">
 
-    <!-- 应用标题 -->
+    <!-- Application Title -->
     <TextView
         android:id="@+id/tvRegisterTitle"
         android:layout_width="wrap_content"
@@ -22,7 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="4dp"/>
 
-    <!-- 应用图标 -->
+    <!-- Application Icon -->
     <ImageView
         android:id="@+id/ivRegisterAppIcon"
         android:layout_width="250dp"
@@ -33,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="4dp"/>
 
-    <!-- 用户名输入框 -->
+    <!-- Username Input Field -->
     <EditText
         android:id="@+id/etUsername"
         android:layout_width="0dp"
@@ -45,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp"/>
 
-    <!-- Email 输入框 -->
+    <!-- Email Input Field -->
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="0dp"
@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="4dp"/>
 
-    <!-- 密码输入框 -->
+    <!-- Password Input Field -->
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="0dp"
@@ -71,7 +71,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="4dp"/>
 
-    <!-- 确认密码输入框 -->
+    <!-- Confirm Password Input Field -->
     <EditText
         android:id="@+id/etPasswordConfirm"
         android:layout_width="0dp"
@@ -84,7 +84,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="4dp"/>
 
-    <!-- 注册按钮 -->
+    <!-- Register Button -->
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="0dp"

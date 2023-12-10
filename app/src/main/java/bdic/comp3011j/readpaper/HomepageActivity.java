@@ -55,7 +55,7 @@ public class HomepageActivity extends AppCompatActivity {
 
     private void initView() {
         if (!BmobUser.isLogin()) {
-            // 弹出未登录消息,跳转到登录界面
+            // Display a message for not logged in and navigate to the login page
             Toast.makeText(this, "Please Login!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(HomepageActivity.this, LoginActivity.class);
             startActivity(intent);
@@ -73,17 +73,17 @@ public class HomepageActivity extends AppCompatActivity {
         if (BmobUser.isLogin()) {
             user = BmobUser.getCurrentUser();
         } else {
-            // 弹出未登录消息,跳转到登录界面
+            // Display a message for not logged in and navigate to the login page
             Toast.makeText(this, "Please Login!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(HomepageActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;
         }
-        // 从Bmob数据库中获取与当前用户相关的所有Paper
+        // Retrieve all papers related to the current user from the Bmob database
         BmobQuery<Paper> query = new BmobQuery<>();
         query.addWhereEqualTo("user", new BmobPointer(user));
-        query.order("-createdAt"); // 按创建时间降序排列
+        query.order("-createdAt"); // Order by creation time in descending order
         query.findObjects(new FindListener<Paper>() {
             @Override
             public void done(List<Paper> papers, BmobException e) {
@@ -106,21 +106,21 @@ public class HomepageActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // 加载菜单资源（添加按钮）
+        // Load menu resources (add button)
         getMenuInflater().inflate(R.menu.menu_homepage, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // 处理菜单项的点击事件
+        // Handle menu item click events
         if (item.getItemId() == R.id.addPaper) {
-            // 用户点击了添加按钮
+            // User clicked the add button
             Intent intent = new Intent(this, AddPaperActivity.class);
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.logout) {
-            // 用户点击了注销按钮
+            // User clicked the logout button
             BmobUser.logOut();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
@@ -135,30 +135,30 @@ public class HomepageActivity extends AppCompatActivity {
     }
 
     public void deletePaper(Paper paper, List<Paper> paperList, int position) {
-        // 创建一个 AlertDialog 进行确认
+        // Create an AlertDialog for confirmation
         new AlertDialog.Builder(this)
                 .setTitle("Confirm Delete")
                 .setMessage("Are you sure you want to delete this paper?")
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> { // User clicked YES, so proceed with deletion
-                    // 首先尝试从云服务器中删除论文文件
+                    // First attempt to delete the paper file from the cloud server
                     BmobFile file = new BmobFile();
-                    file.setUrl(paper.getUrl()); // 设置文件的URL
+                    file.setUrl(paper.getUrl()); // Set the file's URL
                     file.delete(new UpdateListener() {
                         @Override
                         public void done(BmobException e) {
                             if (e == null) {
                                 Toast.makeText(HomepageActivity.this, "Paper PDF File deleted successfully", Toast.LENGTH_SHORT).show();
                             } else {
-                                // 文件删除失败(可能是因为当前用户没有上传过pdf文件导致的)
+                                // File deletion failed (possibly because the current user has not uploaded a pdf file)
                                 Toast.makeText(HomepageActivity.this, "File delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
-                    // 之后尝试删除与当前Paper相关的所有聊天记录
-                    queryPaperRelatedChats(paper, new QueryCallback<Chat>() { // 先查询得到与当前Paper相关的所有聊天记录
+                    // Then attempt to delete all chat records related to the current Paper
+                    queryPaperRelatedChats(paper, new QueryCallback<Chat>() { // First, query and retrieve all chat records related to the current Paper
                         @Override
                         public void onSuccess(List<Chat> chatList) {
-                            if (chatList.size() > 0 && chatList != null) { // 如果当前Paper有历史聊天记录,则遍历所有聊天记录并删除
+                            if (chatList.size() > 0 && chatList != null) { // If there are historical chat records for the current Paper, iterate through them and delete
                                 for (int i = 0; i < chatList.size(); i++) {
                                     Chat chat = chatList.get(i);
                                     if (i == chatList.size() - 1) {
@@ -166,22 +166,22 @@ public class HomepageActivity extends AppCompatActivity {
                                             @Override
                                             public void done(BmobException e) {
                                                 if (e == null) {
-                                                    // 聊天记录删除成功,接下来删除Paper对象
+                                                    // Chat record deleted successfully, then delete the Paper object
                                                     Toast.makeText(HomepageActivity.this, "Related Chats delete successfully!", Toast.LENGTH_SHORT).show();
                                                 } else {
-                                                    // 聊天记录删除失败
+                                                    // Chat record deletion failed
                                                     Toast.makeText(HomepageActivity.this, "Chat delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
                                                 paper.delete(new UpdateListener() {
                                                     @Override
                                                     public void done(BmobException e) {
                                                         if (e == null) {
-                                                            // Paper删除成功
+                                                            // Paper deleted successfully
                                                             Toast.makeText(HomepageActivity.this, "Paper deleted successfully", Toast.LENGTH_SHORT).show();
-                                                            paperList.remove(position); // 从列表中移除
-                                                            paperAdapter.notifyItemRemoved(position); // 通知Adapter
+                                                            paperList.remove(position); // Remove from the list
+                                                            paperAdapter.notifyItemRemoved(position); // Notify the Adapter
                                                         } else {
-                                                            // Paper删除失败
+                                                            // Paper deletion failed
                                                             Toast.makeText(HomepageActivity.this, "Paper delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
@@ -193,26 +193,26 @@ public class HomepageActivity extends AppCompatActivity {
                                             @Override
                                             public void done(BmobException e) {
                                                 if (e == null) {
-                                                    // 聊天记录删除成功
+                                                    // Chat record deleted successfully
                                                 } else {
-                                                    // 聊天记录删除失败
+                                                    // Chat record deletion failed
                                                     Toast.makeText(HomepageActivity.this, "Chat delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         });
                                     }
                                 }
-                            } else { // 如果当前论文目前没有相关的聊天记录
+                            } else { // If the current paper currently has no related chat records
                                 paper.delete(new UpdateListener() {
                                     @Override
                                     public void done(BmobException e) {
                                         if (e == null) {
-                                            // Paper删除成功
+                                            // Paper deleted successfully
                                             Toast.makeText(HomepageActivity.this, "Paper deleted successfully", Toast.LENGTH_SHORT).show();
-                                            paperList.remove(position); // 从列表中移除
-                                            paperAdapter.notifyItemRemoved(position); // 通知Adapter
+                                            paperList.remove(position); // Remove from the list
+                                            paperAdapter.notifyItemRemoved(position); // Notify the Adapter
                                         } else {
-                                            // Paper删除失败
+                                            // Paper deletion failed
                                             Toast.makeText(HomepageActivity.this, "Paper delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                     }
@@ -222,7 +222,7 @@ public class HomepageActivity extends AppCompatActivity {
 
                         @Override
                         public void onFail(String reason) {
-                            // 查询失败
+                            // Query failed
                             Toast.makeText(HomepageActivity.this, "Query failed: " + reason, Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -234,10 +234,10 @@ public class HomepageActivity extends AppCompatActivity {
     }
 
     private void queryPaperRelatedChats(Paper paper, QueryCallback<Chat> callback) {
-        // 从Bmob数据库中的Chat表获取所有与当前Paper有关的聊天记录
+        // Retrieve all chat records related to the current Paper from the Bmob database's Chat table
         BmobQuery<Chat> query = new BmobQuery<>();
         query.addWhereEqualTo("paper", paper);
-        query.order("createdAt"); // 按创建时间升序排列
+        query.order("createdAt"); // Order by creation time in ascending order
         query.findObjects(new FindListener<Chat>() {
             @Override
             public void done(List<Chat> chatList, BmobException e) {
@@ -250,4 +250,3 @@ public class HomepageActivity extends AppCompatActivity {
         });
     }
 }
-

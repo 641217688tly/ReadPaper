@@ -31,7 +31,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etPassword = findViewById(R.id.etPassword);
         etPasswordConfirm = findViewById(R.id.etPasswordConfirm);
         btnRegister = findViewById(R.id.btnRegister);
-        // 设置按钮监听时间
+        // Set button click listener
         btnRegister.setOnClickListener(this);
     }
 
@@ -47,21 +47,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String passwordConfirm = etPasswordConfirm.getText().toString().trim();
-        // 确保用户两次输入的密码相同
+        // Ensure that the user's passwords entered twice are the same
         if (!password.equals(passwordConfirm)) {
             Toast.makeText(RegisterActivity.this, "The two passwords are different", Toast.LENGTH_SHORT).show();
             return;
         }
-        // 确保用户使用的邮箱未被注册过
+        // Ensure that the email address used by the user has not been registered before
         BmobQuery<BmobUser> query = new BmobQuery<>();
         query.addWhereEqualTo("email", email);
         query.findObjects(new FindListener<BmobUser>() {
             @Override
             public void done(List<BmobUser> list, BmobException e) {
                 if (e == null) {
-                    if (list.size() > 0) { // 该邮箱已被注册
+                    if (list.size() > 0) { // The email address has been registered
                         Toast.makeText(RegisterActivity.this, "The email address has been registered", Toast.LENGTH_SHORT).show();
-                    } else { // 该邮箱未被注册
+                    } else { // The email address has not been registered
                         BmobUser user = new BmobUser();
                         user.setUsername(username);
                         user.setEmail(email);
@@ -84,6 +84,4 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-
-
 }
